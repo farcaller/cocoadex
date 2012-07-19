@@ -15,7 +15,7 @@ main do |arg|
     logger.error_level = Logger::DEBUG
   end
 
-  if options[:load_docset] and path = File.expand_path(options[:load_docset].first)
+  if options[:'load-docset'] and path = File.expand_path(options[:'load-docset'].first)
     Parser.parse(path)
   end
 
