@@ -4,8 +4,8 @@ require File.expand_path('../lib/cocoadex/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Delisa Mason"]
   gem.email         = ["iskanamagus@gmail.com"]
-  gem.description   = %q{A reference utility for Cocoa APIs}
-  gem.summary       = %q{A command-line reference utility for Cocoa APIs.}
+  gem.description   = %q{A command-line class reference utility Cocoa APIs}
+  gem.summary       = %q{A command-line class reference utility for Cocoa APIs, based on RI.}
   gem.homepage      = "http://kattrali.github.com/cocoadex"
 
   gem.name          = "cocoadex"
@@ -26,7 +26,6 @@ Gem::Specification.new do |gem|
     LICENSE.txt
     readme.md
     bin/cocoadex
-    data/_store
     lib/cocoadex.rb
     lib/cocoadex/keyword.rb
     lib/cocoadex/parser.rb

@@ -19,13 +19,13 @@ module Cocoadex
 
   DEFAULT_WIDTH = 72
 
-  def self.search term
+  def self.search term, load_first=false
     term = term.strip
     unless term.empty?
       objects = Keyword.find(term)
       if objects.size == 0
         puts "No matches found"
-      elsif objects.size == 1
+      elsif objects.size == 1 or load_first
         puts objects.first.print
       else
         template = Cocoadex::Templates::MULTIPLE_CHOICES

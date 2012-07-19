@@ -8,17 +8,43 @@ module Cocoadex
 
     DATA_PATH = File.expand_path("~/.cocoadex/data/store.blob")
     SEPARATOR = "--__--"
+    CLASS_METHOD_DELIM = '+'
+    INST_METHOD_DELIM  = '-'
+    CLASS_PROP_DELIM   = '.'
+    SCOPE_CHARS = [CLASS_PROP_DELIM,CLASS_METHOD_DELIM,INST_METHOD_DELIM]
 
     def self.datastore
       @store ||= []
     end
 
     def self.find text
-      keys = datastore.select {|k| k.term.start_with? text }
-      if key = keys.detect {|k| k.term == text}
-        keys = [key]
+      if (text.split(//u) & SCOPE_CHARS).size == 1
+        scope = SCOPE_CHARS.detect {|c| text.include? c }
+        class_name, term = text.split(scope)
+        find_with_scope scope, class_name, term
+      else
+        keys = datastore.select {|k| k.term.start_with? text }
+        if key = keys.detect {|k| k.term == text}
+          keys = [key]
+        end
+        untokenize(keys)
       end
-      untokenize(keys)
+    end
+
+    def self.find_with_scope scope, class_name, term
+      if class_key = datastore.detect {|k| k.term == class_name }
+        klass = untokenize([class_key]).first
+        case scope
+        when CLASS_PROP_DELIM
+          (klass.methods + klass.properties).select {|m| m.name.start_with? term}
+        when CLASS_METHOD_DELIM
+          klass.class_methods.select {|m| m.name.start_with? term}
+        when INST_METHOD_DELIM
+          klass.instance_methods.select {|m| m.name.start_with? term}
+        end
+      else
+        []
+      end
     end
 
     def self.loaded?

@@ -15,16 +15,15 @@ main do |arg|
     logger.error_level = Logger::DEBUG
   end
 
-  if options[:docset] and path = File.expand_path(options[:docset].first)
+  if options[:load_docset] and path = File.expand_path(options[:load_docset].first)
     Parser.parse(path)
   end
-
 
   if options[:search] and text = options[:search].first
     if Keyword.loaded?
       logger.debug "Loading index..."
       Keyword.read
-      Cocoadex.search(text)
+      Cocoadex.search(text, options[:first])
     else
       puts "No DocSets loaded"
     end
@@ -35,9 +34,10 @@ version Cocoadex::VERSION
 description 'A Class Reference Utility for Cocoa APIs'
 
 on("--verbose","Be verbose")
+on("--first","Load first result when multiple matches exist")
 
-on("-d DOCSET","--docset","DocSet",/^(.*)$/)
-on("-s QUERY","--search","Search",/^(.*)$/)
+on("-d DOCSET","--load-docset","Load a DocSet into the datastore",/^(.*)$/)
+on("-s QUERY","--search","Search the index",/^(.*)$/)
 
 # todo: support --platform, --platform-version, --language, --first, --force
 
