@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["iskanamagus@gmail.com"]
   gem.description   = %q{A reference utility for Cocoa APIs}
   gem.summary       = %q{A command-line reference utility for Cocoa APIs.}
-  gem.homepage      = "https://kattrali.github.com/cocoadex"
+  gem.homepage      = "http://kattrali.github.com/cocoadex"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
