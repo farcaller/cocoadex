@@ -1,10 +1,12 @@
 
+require 'fileutils'
+
 module Cocoadex
   class Keyword
     attr_reader :term, :type, :docset, :url
     attr_accessor :fk, :id
 
-    DATA_PATH = File.join(File.dirname(__FILE__),"..","..","data","store.blob")
+    DATA_PATH = File.expand_path("~/.cocoadex/data/store.blob")
     SEPARATOR = "--__--"
 
     def self.datastore
@@ -31,6 +33,9 @@ module Cocoadex
     end
 
     def self.write
+      unless File.exists? File.dirname(DATA_PATH)
+        FileUtils.mkdir_p File.dirname(DATA_PATH)
+      end
       File.open(DATA_PATH, "w") do |file|
         datastore.each do |keyword|
           file.print(Marshal.dump(keyword))
