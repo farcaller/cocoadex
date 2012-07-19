@@ -38,7 +38,7 @@ module Cocoadex
             title = title_nodes.first['content']
             if title.include? "Deprecated"
               next
-            elsif title.include? "Class Reference"
+            elsif title.include? "Class Reference" or title.include? "Protocol Reference"
               logger.info "    Creating #{title}"
               Keyword.tokenize_class docset.name, f, index
             end
