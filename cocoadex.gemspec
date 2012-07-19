@@ -10,6 +10,7 @@ Gem::Specification.new do |gem|
 
   gem.name          = "cocoadex"
   gem.require_paths = ["lib"]
+  gem.extra_rdoc_files = ['readme.md']
   gem.version       = Cocoadex::VERSION
   # gem.add_development_dependency('bacon')
   gem.add_development_dependency('rdoc')
