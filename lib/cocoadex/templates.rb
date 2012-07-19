@@ -21,7 +21,7 @@ module Cocoadex
 <%= hrule %>
 
 <%= section_header( "Overview:" ) %>
-<%= Bri::Renderer.wrap_row(overview.join('\n'), Cocoadex.width) %>
+<%= Bri::Renderer.wrap_row(overview.join('\n\n'), Cocoadex.width) %>
 <% end %>
 
 <%= hrule %>
