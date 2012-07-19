@@ -12,7 +12,7 @@ Cocoadex parses Cocoa documentation files and creates a keyword index. Queries c
 
  - **View Options:** `cocoadex --help`
 
- - **Loading a DocSet:** `cocoadex --load-docset [path]` (Try `~/Library/Developer/DocSets/[docset name]`)
+ - **Loading a DocSet:** `cocoadex --load-docset [path]` (Try `~/Library/Developer/Shared/Documentation/DocSets/[docset name]`)
 
  - **Look up Documentation:** `cocoadex --search [query]`
    - Valid search terms are Class, method, and property names. Search scope can also be focused using delimiters, such as `ClassName-method` to find instance methods, `Class+method` to find class methods, or `Class.method` to find any matching method or property in `Class`.
