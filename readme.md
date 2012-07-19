@@ -62,6 +62,8 @@ Available in iOS 2.0 and later.
 
 ## Todo
 
+ - Look into other formatting options, like `--plain` and `--html`
+ - Allow loading specific components of docs, like `--declaration`,`--overview`, `--methods`, etc
  - Add option to turn on/off fuzzy matching
  - Support auto-loading DocSets from common locations
  - Persist object model/datastore using AR or similar
