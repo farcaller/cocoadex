@@ -79,7 +79,7 @@ module Cocoadex
       end
 
       def print_parameters
-        parameters.map {|pm| pm.print}.join("\n            ") if parameters
+        parameters.map {|pm| pm.print}.join("\n              ") if parameters
       end
     end
   end
