@@ -21,30 +21,31 @@ module Cocoadex
 
     # Search the cache for matching text
     def self.find text
-      if (text.split(//u) & SCOPE_CHARS).size == 1
-        scope = SCOPE_CHARS.detect {|c| text.include? c }
+      if scope = SCOPE_CHARS.detect {|c| text.include? c }
         class_name, term = text.split(scope)
         find_with_scope scope, class_name, term
       else
         keys = datastore.select {|k| k.term.start_with? text }
-        if key = keys.detect {|k| k.term == text}
+        if key = keys.detect {|k| k.term == text }
           keys = [key]
         end
         untokenize(keys)
       end
     end
 
+    # Find matches for term within a given class
     def self.find_with_scope scope, class_name, term
       if class_key = datastore.detect {|k| k.term == class_name }
         klass = untokenize([class_key]).first
-        case scope
-        when CLASS_PROP_DELIM
-          (klass.methods + klass.properties).select {|m| m.name.start_with? term}
-        when CLASS_METHOD_DELIM
-          klass.class_methods.select {|m| m.name.start_with? term}
-        when INST_METHOD_DELIM
-          klass.instance_methods.select {|m| m.name.start_with? term}
+        list  = case scope
+          when CLASS_PROP_DELIM
+            klass.methods + klass.properties
+          when CLASS_METHOD_DELIM
+            klass.class_methods
+          when INST_METHOD_DELIM
+            klass.instance_methods
         end
+        list.select {|m| m.name.start_with? term}
       else
         []
       end
@@ -85,12 +86,8 @@ module Cocoadex
         when :method, :property
           if class_key = datastore.detect {|k| k.id == key.fk}
             klass = Cocoadex::Class.new(class_key.url)
-            case key.type
-            when :method
-              klass.methods.detect {|m| m.name == key.term}
-            when :property
-              klass.properties.detect {|m| m.name == key.term}
-            end
+            list = key.type == :method ? klass.methods : klass.properties
+            list.detect {|m| m.name == key.term}
           end
         end
       end
@@ -103,16 +100,12 @@ module Cocoadex
       class_key.id = id
       datastore << class_key
 
-      klass.methods.each do |m|
-        mkey = Keyword.new(m.name, :method, docset, path)
-        mkey.fk = id
-        datastore << mkey
-      end
-
-      klass.properties.each do |p|
-        pkey = Keyword.new(p.name, :property, docset, path)
-        pkey.fk = id
-        datastore << pkey
+      {:method => klass.methods, :property => klass.properties}.each do |type,list|
+        list.each do |item|
+          item_key = Keyword.new(item.name, type, docset, path)
+          item_key.fk = id
+          datastore << item_key
+        end
       end
     end
 
