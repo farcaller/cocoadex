@@ -3,7 +3,9 @@ require 'set'
 
 module Cocoadex
   class Class < Entity
-    attr_reader :name, :description, :overview
+    TEMPLATE=Cocoadex::Templates::CLASS_DESCRIPTION
+
+    attr_reader :description, :overview
 
     def properties
       @properties ||=[]
@@ -17,45 +19,31 @@ module Cocoadex
       @methods ||= ::Set.new
     end
 
+    def class_methods
+      methods.select{|m| m.scope == :class }
+    end
+
+    def instance_methods
+      methods.select{|m| m.scope == :instance }
+    end
+
     def parents
       @parents ||= []
     end
 
-    def to_s
-      "Class #{name}"
+    def type
+      "Class"
     end
 
-    def print
-      puts <<-INFO
-      Class: #{name}
-
-        #{description}
-
-        Inherits From: #{parents.join(' > ')}
-
-        Overview:
-
-          #{overview}
-
-        Properties:
-
-      INFO
-      properties.each do |prop|
-        prop.print
-      end
-      puts <<-INFO
-        Methods:
-      INFO
-      methods.each do |m|
-        m.print
-      end
+    def origin
+      parents.join(' > ')
     end
 
     def parse doc
       @name = doc.css('body a').first['title']
       @description = doc.css('meta#description').first['content']
       # @overview = doc.css(".zClassDescription p.abstract").first.text
-      @overview = doc.css(".zClassDescription").first.text.sub("Overview","")
+      @overview = doc.css(".zClassDescription").first.children.map {|n| n.text.sub("Overview","") }
       @parents = doc.css("div.zSharedSpecBoxHeadList").first.css('a').map {|node| node.text}
 
       parse_properties(doc)
@@ -66,16 +54,15 @@ module Cocoadex
     def parse_methods doc
       [:class, :instance].each do |selector|
         nodes = doc.css("div.#{selector}Method")
-        # logger.debug(nodes.inspect)
         unless nodes.empty?
-          methods.merge(nodes.map {|n| Method.new(selector, n)})
+          methods.merge(nodes.map {|n| Method.new(self, selector, n)})
         end
       end
     end
 
     def parse_properties doc
       @properties = doc.css("div.propertyObjC").map do |prop|
-        Property.new(prop)
+        Property.new(self, prop)
       end
     end
 

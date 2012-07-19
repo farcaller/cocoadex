@@ -1,22 +1,28 @@
 
 module Cocoadex
   class Class < Entity
-    class Method
-      attr_reader :name, :abstract, :declaration, :scope,
-        :discussion, :declared_in, :availability, :parameters,
-        :return_value
+    class Method < Element
+      TEMPLATE=Cocoadex::Templates::METHOD_DESCRIPTION
 
-      attr_accessor :class_name
+      attr_reader :abstract, :declaration, :discussion,
+        :declared_in, :availability, :parameters,
+        :return_value, :scope, :parent
 
       class Parameter
+        include Comparable
+
         attr_reader :name, :description
 
         def initialize name, description
           @name, @description = name, description
         end
 
-        def print
+        def to_s
           "#{name} - #{description}"
+        end
+
+        def <=> other
+          name <=> other.name if other.respond_to? :name
         end
       end
 
@@ -24,9 +30,10 @@ module Cocoadex
         @parameters ||= []
       end
 
-      def initialize type, node
-        @type = type
-        @name = node.css("h3.#{type}Method").first.text
+      def initialize parent_class, type, node
+        @parent = parent_class
+        @scope  = type
+        @name   = node.css("h3.#{type}Method").first.text
         logger.debug("parsing #{@type} method #{@name}")
         @abstract = node.css(".abstract").first.text
         @declaration = node.css(".declaration").first.text
@@ -62,24 +69,12 @@ module Cocoadex
         end
       end
 
-      def to_s
-        "Method #{name}"
+      def type
+        "#{scope.to_s.capitalize} Method"
       end
 
-      def print
-        puts <<-PRINT
-          Declared in: #{declared_in}
-
-          #{declaration}
-              #{print_parameters}
-            Returns: #{return_value}
-            #{abstract}
-            #{availability}
-        PRINT
-      end
-
-      def print_parameters
-        parameters.map {|pm| pm.print}.join("\n              ") if parameters
+      def origin
+        parent.to_s
       end
     end
   end

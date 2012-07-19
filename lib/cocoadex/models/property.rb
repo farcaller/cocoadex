@@ -1,12 +1,14 @@
 
 module Cocoadex
-  class Property
-    attr_reader :name, :abstract, :declaration, :discussion, :availability
+  class Property < Element
+    TEMPLATE=Cocoadex::Templates::PROPERTY_DESCRIPTION
 
-    attr_accessor :class_name
+    attr_reader :abstract, :declaration, :discussion,
+      :availability, :parent
 
-    def initialize node
-      @name = node.css("h3.method_property").first.text
+    def initialize parent_class, node
+      @parent = parent_class
+      @name   = node.css("h3.method_property").first.text
       logger.debug("Adding property: #{@name}")
 
       if abs = node.css(".abstract") and abs.length > 0
@@ -26,19 +28,12 @@ module Cocoadex
       end
     end
 
-    def to_s
-      "Property #{name}"
+    def origin
+      parent.to_s
     end
 
-    def print
-      puts <<-PRINT
-        Declared in: #{class_name || ''}
-
-        #{name}
-          #{abstract}
-          #{availability}
-
-      PRINT
+    def type
+      "Property"
     end
   end
 end

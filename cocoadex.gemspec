@@ -8,9 +8,6 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{A command-line reference utility for Cocoa APIs.}
   gem.homepage      = "http://kattrali.github.com/cocoadex"
 
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "cocoadex"
   gem.require_paths = ["lib"]
   gem.version       = Cocoadex::VERSION
@@ -19,7 +16,30 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency('aruba')
   gem.add_development_dependency('rake','~> 0.9.2')
   gem.add_dependency('methadone', '~>1.2.1')
-  # gem.add_dependency('term-ansicolor')
+  gem.add_dependency('term-ansicolor')
   # gem.add_dependency('sqlite3')
+  gem.add_dependency('bri')
   gem.add_dependency('nokogiri')
+  gem.files = %W{
+    Gemfile
+    LICENSE
+    LICENSE.txt
+    readme.md
+    bin/cocoadex
+    data/_store
+    lib/cocoadex.rb
+    lib/cocoadex/keyword.rb
+    lib/cocoadex/parser.rb
+    lib/cocoadex/templates.rb
+    lib/cocoadex/version.rb
+    lib/cocoadex/models/class.rb
+    lib/cocoadex/models/docset.rb
+    lib/cocoadex/models/element.rb
+    lib/cocoadex/models/entity.rb
+    lib/cocoadex/models/method.rb
+    lib/cocoadex/models/property.rb
+    lib/ext/nil.rb
+  }
+  gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
 end

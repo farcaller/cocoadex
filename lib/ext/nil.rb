@@ -12,6 +12,10 @@ class NilClass
     nil
   end
 
+  def children
+    []
+  end
+
   def next
     nil
   end

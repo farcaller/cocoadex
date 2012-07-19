@@ -1,15 +1,11 @@
 
 module Cocoadex
-  class Entity
+  class Entity < Element
 
     def initialize path
       text     = clean(IO.read(path))
       document = Nokogiri::HTML(text)
       parse(document)
-    end
-
-    def print
-      raise "print() not defined for #{self.class}"
     end
 
     def clean text

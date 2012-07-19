@@ -24,32 +24,9 @@ main do |arg|
     if Keyword.loaded?
       logger.debug "Loading index..."
       Keyword.read
-      search(text)
+      Cocoadex.search(text)
     else
       puts "No DocSets loaded"
-    end
-  end
-end
-
-def search term
-  if term and not term.strip.empty?
-    objects = Keyword.find(term.strip)
-    if objects.size == 0
-      puts "No matches found"
-    elsif objects.size == 1
-      objects.first.print
-    else
-      objects.each_with_index do |obj, index|
-        puts "#{index} #{obj}"
-      end
-      puts "Select:"
-      which = gets
-      begin
-        index = [[which.to_i,0].max,objects.size - 1].min
-        objects[index].print
-      rescue Exception => e
-        puts ":("
-      end
     end
   end
 end

@@ -54,13 +54,10 @@ module Cocoadex
             klass = Cocoadex::Class.new(class_key.url)
             case key.type
             when :method
-              entity = klass.methods.detect {|m| m.name == key.term}
+              klass.methods.detect {|m| m.name == key.term}
             when :property
-              entity = klass.properties.detect {|m| m.name == key.term}
+              klass.properties.detect {|m| m.name == key.term}
             end
-
-            entity.class_name = klass.name
-            entity
           end
         end
       end
