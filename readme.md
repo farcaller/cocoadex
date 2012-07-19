@@ -60,6 +60,33 @@ Parameters:
 Available in iOS 2.0 and later.
 </pre>
 
+*Class Lookup Example (Clipped for brevity)*
+
+<pre>
+$ cocoadex -s UILabel
+
+--------------------------------------------------------- Class: UILabel
+                                       (UIView > UIResponder > NSObject)
+
+Describes a control for displaying static text.
+------------------------------------------------------------------------
+
+Overview:
+
+   (...)
+
+Instance Methods:
+  drawTextInRect:, textRectForBounds:limitedToNumberOfLines:
+
+Properties:
+  adjustsFontSizeToFitWidth, baselineAdjustment, enabled, font,
+  highlighted, highlightedTextColor, lineBreakMode, minimumFontSize,
+  numberOfLines, shadowColor, shadowOffset, text, textAlignment,
+  textColor, userInteractionEnabled
+
+</pre>
+
+
 ## Todo
 
  - Look into other formatting options, like `--plain` and `--html`
