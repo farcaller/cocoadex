@@ -11,9 +11,8 @@ Gem::Specification.new do |gem|
   gem.name          = "cocoadex"
   gem.require_paths = ["lib"]
   gem.version       = Cocoadex::VERSION
-  gem.add_development_dependency('bacon')
+  # gem.add_development_dependency('bacon')
   gem.add_development_dependency('rdoc')
-  gem.add_development_dependency('aruba')
   gem.add_development_dependency('rake','~> 0.9.2')
   gem.add_dependency('methadone', '~>1.2.1')
   gem.add_dependency('term-ansicolor')
