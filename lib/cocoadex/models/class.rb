@@ -2,6 +2,7 @@
 require 'set'
 
 module Cocoadex
+  # A model of a Cocoa API class or protocol
   class Class < Entity
     TEMPLATE=Cocoadex::Templates::CLASS_DESCRIPTION
 

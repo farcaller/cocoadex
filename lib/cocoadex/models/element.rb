@@ -1,5 +1,6 @@
 
 module Cocoadex
+  # A searchable element stored in the cache
   class Element
     include Comparable
     include Bri::Templates::Helpers

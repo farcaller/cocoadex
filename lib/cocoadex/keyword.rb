@@ -6,7 +6,9 @@ module Cocoadex
     attr_reader :term, :type, :docset, :url
     attr_accessor :fk, :id
 
+    # Cache storage location
     DATA_PATH = File.expand_path("~/.cocoadex/data/store.blob")
+
     SEPARATOR = "--__--"
     CLASS_METHOD_DELIM = '+'
     INST_METHOD_DELIM  = '-'
@@ -17,6 +19,7 @@ module Cocoadex
       @store ||= []
     end
 
+    # Search the cache for matching text
     def self.find text
       if (text.split(//u) & SCOPE_CHARS).size == 1
         scope = SCOPE_CHARS.detect {|c| text.include? c }
@@ -47,10 +50,12 @@ module Cocoadex
       end
     end
 
+    # Are any docsets loaded into the cache?
     def self.loaded?
       File.exists? DATA_PATH
     end
 
+    # Read a serialized cache file into an Array
     def self.read
       $/=SEPARATOR
       File.open(DATA_PATH, "r").each do |object|
@@ -58,6 +63,7 @@ module Cocoadex
       end
     end
 
+    # Write a cache Array as a serialized file
     def self.write
       unless File.exists? File.dirname(DATA_PATH)
         FileUtils.mkdir_p File.dirname(DATA_PATH)
@@ -70,6 +76,7 @@ module Cocoadex
       end
     end
 
+    # Create Cocoadex model objects for Keyword references
     def self.untokenize keys
       keys.map do |key|
         case key.type
@@ -89,6 +96,7 @@ module Cocoadex
       end
     end
 
+    # Find all searchable keywords in a class and add to cache
     def self.tokenize_class docset, path, id
       klass = Cocoadex::Class.new(path)
       class_key = Keyword.new(klass.name, :class, docset, path)

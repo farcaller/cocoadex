@@ -19,6 +19,7 @@ module Cocoadex
 
   DEFAULT_WIDTH = 72
 
+  # output documentation text for a given search term
   def self.search term, load_first=false
     term = term.strip
     unless term.empty?
@@ -34,6 +35,7 @@ module Cocoadex
     end
   end
 
+  # The maximum line width
   def self.width
     @width || DEFAULT_WIDTH
   end
@@ -42,10 +44,13 @@ module Cocoadex
     @width = width
   end
 
+  # add leading whitespace to lines
   def self.indent text, level=2
     text.split("\n").collect {|row| "#{' '*level}#{row}"}.join("\n" )
   end
 
+  # add leading whitespace to lines, increasing indent after
+  # the first line
   def self.trailing_indent text, base_level=2, inside_level=4
     text.split("\n").each_with_index.collect do |row, index|
       level = index == 0 ? base_level : inside_level

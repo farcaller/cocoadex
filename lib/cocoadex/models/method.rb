@@ -1,6 +1,7 @@
 
 module Cocoadex
   class Class < Entity
+    # A model of a method in a Cocoa class
     class Method < Element
       TEMPLATE=Cocoadex::Templates::METHOD_DESCRIPTION
 

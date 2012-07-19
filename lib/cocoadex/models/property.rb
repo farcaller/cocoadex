@@ -1,5 +1,6 @@
 
 module Cocoadex
+  # A Cocoa API class property
   class Property < Element
     TEMPLATE=Cocoadex::Templates::PROPERTY_DESCRIPTION
 
