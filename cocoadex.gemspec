@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
 
   gem.name          = "cocoadex"
   gem.require_paths = ["lib"]
-  gem.extra_rdoc_files = ['readme.md']
+  gem.extra_rdoc_files = ['readme.md','changelog.md']
   gem.version       = Cocoadex::VERSION
   # gem.add_development_dependency('bacon')
   gem.add_development_dependency('rdoc')
@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
     Gemfile
     LICENSE
     LICENSE.txt
+    changelog.md
     readme.md
     bin/cocoadex
     lib/cocoadex.rb
