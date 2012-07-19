@@ -8,19 +8,26 @@ include Methadone::Main
 include Methadone::CLILogging
 include Cocoadex
 
+logger.error_level = Logger::ERROR
+
 main do |arg|
+  if options[:verbose]
+    logger.error_level = Logger::DEBUG
+  end
+
   if options[:docset] and path = File.expand_path(options[:docset].first)
     Parser.parse(path)
   end
+
+
   if options[:search] and text = options[:search].first
-    if File.exist? Keyword::DATA_PATH
-      logger.info "Loading index..."
+    if Keyword.loaded?
+      logger.debug "Loading index..."
       Keyword.read
+      search(text)
     else
       puts "No DocSets loaded"
-      return
     end
-    search(text)
   end
 end
 
@@ -50,10 +57,11 @@ end
 version Cocoadex::VERSION
 description 'A Class Reference Utility for Cocoa APIs'
 
+on("--verbose","Be verbose")
 
 on("-d DOCSET","--docset","DocSet",/^(.*)$/)
 on("-s QUERY","--search","Search",/^(.*)$/)
 
-# todo: support --platform, --platform-version, --language, --first
+# todo: support --platform, --platform-version, --language, --first, --force
 
 go!
