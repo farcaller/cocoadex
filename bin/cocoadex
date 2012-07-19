@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+require 'methadone'
+require 'nokogiri'
+require 'cocoadex'
+
+include Methadone::Main
+include Methadone::CLILogging
+include Cocoadex
+
+main do |arg|
+  if options[:docset] and path = File.expand_path(options[:docset].first)
+    Parser.parse(path)
+  end
+  if options[:search] and text = options[:search].first
+    if File.exist? Keyword::DATA_PATH
+      logger.info "Loading index..."
+      Keyword.read
+    else
+      puts "No DocSets loaded"
+      return
+    end
+    search(text)
+  end
+end
+
+def search term
+  if term and not term.strip.empty?
+    objects = Keyword.find(term.strip)
+    if objects.size == 0
+      puts "No matches found"
+    elsif objects.size == 1
+      objects.first.print
+    else
+      objects.each_with_index do |obj, index|
+        puts "#{index} #{obj}"
+      end
+      puts "Select:"
+      which = gets
+      begin
+        index = [[which.to_i,0].max,objects.size - 1].min
+        objects[index].print
+      rescue Exception => e
+        puts ":("
+      end
+    end
+  end
+end
+
+version Cocoadex::VERSION
+description 'A Class Reference Utility for Cocoa APIs'
+
+
+on("-d DOCSET","--docset","DocSet",/^(.*)$/)
+on("-s QUERY","--search","Search",/^(.*)$/)
+
+# todo: support --platform, --platform-version, --language, --first
+
+go!
