@@ -1,5 +1,5 @@
 
-module CocoaAssistant
+module Cocoadex
   class DocSet
     attr_reader :platform, :version, :name, :description, :path
 
