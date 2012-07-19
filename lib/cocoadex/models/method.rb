@@ -16,7 +16,7 @@ module Cocoadex
         end
 
         def print
-          puts "#{name} - #{description}"
+          "#{name} - #{description}"
         end
       end
 

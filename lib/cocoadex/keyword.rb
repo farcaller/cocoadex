@@ -4,7 +4,8 @@ module Cocoadex
     attr_reader :term, :type, :docset, :url
     attr_accessor :fk, :id
 
-    DATA_PATH = File.join(File.dirname(__FILE__),"..","..","data","store.yaml")
+    DATA_PATH = File.join(File.dirname(__FILE__),"..","..","data","store.blob")
+    SEPARATOR = "--__--"
 
     def self.datastore
       @store ||= []
@@ -23,17 +24,17 @@ module Cocoadex
     end
 
     def self.read
-      $/="\n\n"
+      $/=SEPARATOR
       File.open(DATA_PATH, "r").each do |object|
-        datastore << YAML::load(object)
+        datastore << Marshal::load(object)
       end
     end
 
     def self.write
       File.open(DATA_PATH, "w") do |file|
         datastore.each do |keyword|
-          file.puts(YAML.dump(keyword))
-          file.puts
+          file.print(Marshal.dump(keyword))
+          file.print SEPARATOR
         end
       end
     end
