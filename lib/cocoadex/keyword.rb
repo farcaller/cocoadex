@@ -12,7 +12,14 @@ module Cocoadex
 
     def self.find text
       keys = datastore.select {|k| k.term.start_with? text }
+      if key = keys.detect {|k| k.term == text}
+        keys = [key]
+      end
       untokenize(keys)
+    end
+
+    def self.loaded?
+      File.exists? DATA_PATH
     end
 
     def self.read
