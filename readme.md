@@ -15,16 +15,17 @@ Spartan documentation lookup for Cocoa APIs
    - Valid search terms are Class, method, and property names
    - Example:
 
-    $ cocoadex -s tableView:didSelectRow
-          Declared in: UITableView.h
+<pre>
+$ cocoadex -s tableView:didSelectRow
+Declared in: UITableView.h
 
-          - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-              tableView - A table-view object informing the delegate about the new row selection.
-              indexPath - An index path locating the new selected row in tableView.
-            Returns:
-            Tells the delegate that the specified row is now selected.
-            Available in iOS 2.0 and later.
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+    tableView - A table-view object informing the delegate about the new row selection.
+    indexPath - An index path locating the new selected row in tableView.
+  Returns:
+  Tells the delegate that the specified row is now selected.
+  Available in iOS 2.0 and later.
+</pre>
 
 ## Todo
 
