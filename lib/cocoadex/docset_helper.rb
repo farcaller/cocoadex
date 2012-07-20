@@ -15,7 +15,7 @@ module Cocoadex
 
     def self.docset_paths
       @paths ||= begin
-        ROOT_PATHS.map { |path| Dir.glob(path+'/*/') }.flatten
+        ROOT_PATHS.map { |path| Dir.glob(File.expand_path(path)+'/*/') }.flatten
       end
     end
 
