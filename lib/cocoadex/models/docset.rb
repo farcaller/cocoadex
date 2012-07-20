@@ -26,7 +26,7 @@ module Cocoadex
       if key_node
         key_node.next.text
       else
-        logger.iwarn "Node not found: #{key}"
+        logger.debug "Node not found: #{key}"
         nil
       end
     end
