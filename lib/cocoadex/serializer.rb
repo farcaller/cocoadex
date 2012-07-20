@@ -13,11 +13,23 @@ module Cocoadex
       array
     end
 
-    # Write a cache Array as a serialized file
-    def self.write path, array, style
+    def self.check_path path
       unless File.exists? File.dirname(path)
         FileUtils.mkdir_p File.dirname(path)
       end
+    end
+
+    # Write text to a file
+    def self.write_text path, text
+      check_path path
+      File.open(path, 'w') do |file|
+        file.print text
+      end
+    end
+
+    # Write a cache Array as a serialized file
+    def self.write path, array, style
+      check_path path
 
       mode = case style
         when :append then 'a'
