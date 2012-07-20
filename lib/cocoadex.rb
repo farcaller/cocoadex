@@ -1,6 +1,8 @@
 
 require 'erb'
 require 'bri'
+require 'cocoadex/docset_helper'
+require 'cocoadex/serializer'
 require 'cocoadex/version'
 require 'cocoadex/templates'
 require 'cocoadex/models/docset'

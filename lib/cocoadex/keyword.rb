@@ -23,11 +23,15 @@ module Cocoadex
     def self.find text
       if scope = SCOPE_CHARS.detect {|c| text.include? c }
         class_name, term = text.split(scope)
+        logger.debug "Searching scope: #{scope}, #{class_name}, #{term}"
         find_with_scope scope, class_name, term
       else
+        logger.debug "Searching Keyword datastore (#{datastore.size}): #{text}"
         keys = datastore.select {|k| k.term.start_with? text }
+        logger.debug "#{keys.size} keys found"
         if key = keys.detect {|k| k.term == text }
           keys = [key]
+          logger.debug "Exact match!"
         end
         untokenize(keys)
       end
@@ -58,23 +62,13 @@ module Cocoadex
 
     # Read a serialized cache file into an Array
     def self.read
-      $/=SEPARATOR
-      File.open(DATA_PATH, "r").each do |object|
-        datastore << Marshal::load(object)
-      end
+      @store = Serializer.read(DATA_PATH)
+      logger.debug "Loaded #{datastore.size} tokens"
     end
 
     # Write a cache Array as a serialized file
-    def self.write
-      unless File.exists? File.dirname(DATA_PATH)
-        FileUtils.mkdir_p File.dirname(DATA_PATH)
-      end
-      File.open(DATA_PATH, "w") do |file|
-        datastore.each do |keyword|
-          file.print(Marshal.dump(keyword))
-          file.print SEPARATOR
-        end
-      end
+    def self.write style
+      Serializer.write(DATA_PATH, datastore, style)
     end
 
     # Create Cocoadex model objects for Keyword references
@@ -86,6 +80,7 @@ module Cocoadex
         when :method, :property
           if class_key = datastore.detect {|k| k.id == key.fk}
             klass = Cocoadex::Class.new(class_key.url)
+            logger.debug "Searching #{key.type} list of #{klass.name}"
             list = key.type == :method ? klass.methods : klass.properties
             list.detect {|m| m.name == key.term}
           end
