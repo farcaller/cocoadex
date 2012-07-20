@@ -27,9 +27,12 @@ Gem::Specification.new do |gem|
     changelog.md
     readme.md
     bin/cocoadex
+    bin/cocoadex_completion.sh
     lib/cocoadex.rb
+    lib/cocoadex/docset_helper.rb
     lib/cocoadex/keyword.rb
     lib/cocoadex/parser.rb
+    lib/cocoadex/serializer.rb
     lib/cocoadex/templates.rb
     lib/cocoadex/version.rb
     lib/cocoadex/models/class.rb

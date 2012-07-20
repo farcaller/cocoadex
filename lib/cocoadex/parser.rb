@@ -25,11 +25,15 @@ module Cocoadex
       title.include? "Class Reference" or title.include? "Protocol Reference"
     end
 
+    def self.deprecated? title
+      title =~ /^Deprecated ([A-Za-z]+) Methods$/
+    end
+
     def self.parse docset_path
-      logger.info "Parsing docset tokens (This may take a moment)..."
       plist = File.join(docset_path,"Contents", "Info.plist")
       if File.exist? plist
         docset = DocSet.new(plist)
+        logger.info "Parsing docset tokens in #{docset.name}. This may take a moment..."
 
         files = Dir.glob(docset_path+"/**/*.html")
         files.reject! {|f| ignored?(f) }
@@ -37,8 +41,8 @@ module Cocoadex
           index_html(docset,f,i)
         end
 
-        logger.info "Tokens Indexed: #{Keyword.datastore.size}"
-        Keyword.write
+        logger.info "  Tokens Indexed: #{Keyword.datastore.size}"
+        docset
       end
     end
 
@@ -51,7 +55,7 @@ module Cocoadex
         title = title_nodes.first['content']
 
         if class_ref? title
-          # logger.info "Caching #{title}"
+          logger.debug "Caching #{title}"
           Keyword.tokenize_class docset.name, path, index
         end
       end

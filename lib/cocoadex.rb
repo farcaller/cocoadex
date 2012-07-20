@@ -1,6 +1,8 @@
 
 require 'erb'
 require 'bri'
+require 'cocoadex/docset_helper'
+require 'cocoadex/serializer'
 require 'cocoadex/version'
 require 'cocoadex/templates'
 require 'cocoadex/models/docset'
@@ -18,6 +20,8 @@ require 'term/ansicolor'
 module Cocoadex
 
   DEFAULT_WIDTH = 72
+
+  CONFIG_DIR=File.expand_path("~/.cocoadex")
 
   # output documentation text for a given search term
   def self.search term, load_first=false
@@ -42,6 +46,11 @@ module Cocoadex
 
   def self.width= width
     @width = width
+  end
+
+  # path to a file in the default configuration directory
+  def self.config_file subpath
+    File.expand_path(File.join(Cocoadex::CONFIG_DIR,subpath))
   end
 
   # add leading whitespace to lines

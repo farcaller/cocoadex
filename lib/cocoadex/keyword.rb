@@ -6,10 +6,6 @@ module Cocoadex
     attr_reader :term, :type, :docset, :url
     attr_accessor :fk, :id
 
-    # Cache storage location
-    DATA_PATH = File.expand_path("~/.cocoadex/data/store.blob")
-
-    SEPARATOR = "--__--"
     CLASS_METHOD_DELIM = '+'
     INST_METHOD_DELIM  = '-'
     CLASS_PROP_DELIM   = '.'
@@ -19,15 +15,28 @@ module Cocoadex
       @store ||= []
     end
 
+    # Cache storage location
+    def self.data_path
+      Cocoadex.config_file("data/store.blob")
+    end
+
+    def self.tags_path
+      Cocoadex.config_file("tags")
+    end
+
     # Search the cache for matching text
     def self.find text
       if scope = SCOPE_CHARS.detect {|c| text.include? c }
         class_name, term = text.split(scope)
+        logger.debug "Searching scope: #{scope}, #{class_name}, #{term}"
         find_with_scope scope, class_name, term
       else
+        logger.debug "Searching Keyword datastore (#{datastore.size}): #{text}"
         keys = datastore.select {|k| k.term.start_with? text }
+        logger.debug "#{keys.size} keys found"
         if key = keys.detect {|k| k.term == text }
           keys = [key]
+          logger.debug "Exact match!"
         end
         untokenize(keys)
       end
@@ -53,28 +62,34 @@ module Cocoadex
 
     # Are any docsets loaded into the cache?
     def self.loaded?
-      File.exists? DATA_PATH
+      File.exists? data_path
     end
 
     # Read a serialized cache file into an Array
     def self.read
-      $/=SEPARATOR
-      File.open(DATA_PATH, "r").each do |object|
-        datastore << Marshal::load(object)
-      end
+      @store = Serializer.read(data_path)
+      logger.debug "Loaded #{datastore.size} tokens"
     end
 
     # Write a cache Array as a serialized file
-    def self.write
-      unless File.exists? File.dirname(DATA_PATH)
-        FileUtils.mkdir_p File.dirname(DATA_PATH)
-      end
-      File.open(DATA_PATH, "w") do |file|
-        datastore.each do |keyword|
-          file.print(Marshal.dump(keyword))
-          file.print SEPARATOR
+    def self.write style
+      Serializer.write(data_path, datastore, style)
+    end
+
+    def self.tags
+      @tags ||= begin
+        if File.exists? tags_path
+          IO.read(tags_path).split('\n')
+        else
+          []
         end
       end
+    end
+
+    # Build a tags file from existing kewords
+    def self.generate_tags!
+      text = datastore.map {|k| k.term }.join('\n')
+      Serializer.write_text tags_path, text
     end
 
     # Create Cocoadex model objects for Keyword references
@@ -86,6 +101,7 @@ module Cocoadex
         when :method, :property
           if class_key = datastore.detect {|k| k.id == key.fk}
             klass = Cocoadex::Class.new(class_key.url)
+            logger.debug "Searching #{key.type} list of #{klass.name}"
             list = key.type == :method ? klass.methods : klass.properties
             list.detect {|m| m.name == key.term}
           end
