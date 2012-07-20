@@ -6,10 +6,6 @@ module Cocoadex
     attr_reader :term, :type, :docset, :url
     attr_accessor :fk, :id
 
-    # Cache storage location
-    DATA_PATH = File.expand_path("~/.cocoadex/data/store.blob")
-
-    SEPARATOR = "--__--"
     CLASS_METHOD_DELIM = '+'
     INST_METHOD_DELIM  = '-'
     CLASS_PROP_DELIM   = '.'
@@ -17,6 +13,15 @@ module Cocoadex
 
     def self.datastore
       @store ||= []
+    end
+
+    # Cache storage location
+    def self.data_path
+      Cocoadex.config_file("data/store.blob")
+    end
+
+    def self.tags_path
+      Cocoadex.config_file("tags")
     end
 
     # Search the cache for matching text
@@ -57,18 +62,34 @@ module Cocoadex
 
     # Are any docsets loaded into the cache?
     def self.loaded?
-      File.exists? DATA_PATH
+      File.exists? data_path
     end
 
     # Read a serialized cache file into an Array
     def self.read
-      @store = Serializer.read(DATA_PATH)
+      @store = Serializer.read(data_path)
       logger.debug "Loaded #{datastore.size} tokens"
     end
 
     # Write a cache Array as a serialized file
     def self.write style
-      Serializer.write(DATA_PATH, datastore, style)
+      Serializer.write(data_path, datastore, style)
+    end
+
+    def self.tags
+      @tags ||= begin
+        if File.exists? tags_path
+          IO.read(tags_path).split('\n')
+        else
+          []
+        end
+      end
+    end
+
+    # Build a tags file from existing kewords
+    def self.generate_tags!
+      text = datastore.map {|k| k.term }.join('\n')
+      Serializer.write_text tags_path, text
     end
 
     # Create Cocoadex model objects for Keyword references

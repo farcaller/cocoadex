@@ -2,14 +2,16 @@
 module Cocoadex
   class DocSetHelper
 
-    DATA_PATH = File.expand_path("~/.cocoadex/data/docsets.blob")
-
     ROOT_PATHS = [
       '~/Library/Developer/Documentation/DocSets',
       '~/Library/Developer/Shared/Documentation/DocSets',
       '/Applications/Xcode.app/Contents/Developer/Documentation/DocSets',
       '/Applications/Xcode.app/Contents/Developer/Platforms/*/Developer/Documentation/DocSets'
     ]
+
+    def self.data_path
+      Cocoadex.config_file("data/docsets.blob")
+    end
 
     def self.docset_paths
       @paths ||= begin
@@ -27,22 +29,23 @@ module Cocoadex
 
       if docsets.size > 0
         Keyword.write(:overwrite)
+        Keyword.generate_tags!
         write(docsets)
       end
       logger.info "Done! #{docsets.size} DocSet#{docsets.size == 1 ? '':'s'} indexed."
     end
 
     def indexed_docsets
-      @docsets ||= Serializer.read(DATA_PATH)
+      @docsets ||= Serializer.read(data_path)
     end
 
     def self.read
-      @docsets = Serializer.read(DATA_PATH)
+      @docsets = Serializer.read(data_path)
     end
 
     def self.write docsets
       @docsets = docsets
-      Serializer.write(DATA_PATH, docsets, :overwrite)
+      Serializer.write(data_path, docsets, :overwrite)
     end
   end
 end

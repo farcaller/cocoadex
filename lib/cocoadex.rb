@@ -21,6 +21,8 @@ module Cocoadex
 
   DEFAULT_WIDTH = 72
 
+  CONFIG_DIR=File.expand_path("~/.cocoadex")
+
   # output documentation text for a given search term
   def self.search term, load_first=false
     term = term.strip
@@ -44,6 +46,11 @@ module Cocoadex
 
   def self.width= width
     @width = width
+  end
+
+  # path to a file in the default configuration directory
+  def self.config_file subpath
+    File.expand_path(File.join(Cocoadex::CONFIG_DIR,subpath))
   end
 
   # add leading whitespace to lines
