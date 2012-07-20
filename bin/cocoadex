@@ -11,14 +11,16 @@ include Cocoadex
 logger.error_level = Logger::ERROR
 
 main do |query|
-  if options[:verbose]
-    logger.error_level = Logger::DEBUG
-  end
+
+  logger.error_level = Logger::DEBUG if options[:verbose]
 
   if options[:configure]
     DocSetHelper.search_and_index
-  elsif options[:'load-docset'] and path = File.expand_path(options[:'load-docset'].first)
-    DocSetHelper.search_and_index([path])
+  elsif options[:'load-docset']
+    paths = options[:'load-docset'].map do |p|
+      File.expand_path(p)
+    end.uniq
+    DocSetHelper.search_and_index(paths)
   end
 
   if query

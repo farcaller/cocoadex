@@ -7,6 +7,7 @@
  - Search term is now an argument, so no need for `-s`
  - Added example script for enabling bash completion on
    class and method names
+ - Accept multiple arguments for the `--load-docset` option
 
 ## 1.2
 
