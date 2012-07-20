@@ -10,7 +10,7 @@ include Cocoadex
 
 logger.error_level = Logger::ERROR
 
-main do |arg|
+main do |query|
   if options[:verbose]
     logger.error_level = Logger::DEBUG
   end
@@ -21,11 +21,11 @@ main do |arg|
     DocSetHelper.search_and_index([path])
   end
 
-  if options[:search] and text = options[:search].first
+  if query
     if Keyword.loaded?
       logger.debug "Loading index..."
       Keyword.read
-      Cocoadex.search(text, options[:first])
+      Cocoadex.search(query, options[:first])
     else
       puts "No DocSets loaded. Run `cocodex --configure` to search for existing DocSets."
     end
@@ -35,13 +35,15 @@ end
 version Cocoadex::VERSION
 description 'A Class Reference Utility for Cocoa APIs'
 
+arg :query, :optional
+
 on("--verbose","Be verbose")
+
 on("--configure","Index all DocSets in default locations")
 
 on("--first","Load first result when multiple matches exist")
 
 on("-d DOCSET","--load-docset","Load a DocSet into the datastore",/^(.*)$/)
-on("-s QUERY","--search","Search the index",/^(.*)$/)
 
 # todo: support --platform, --platform-version, --format [format]
 
