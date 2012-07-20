@@ -21,9 +21,7 @@ main do |query|
       File.expand_path(p)
     end.uniq
     DocSetHelper.search_and_index(paths)
-  end
-
-  if query
+  elsif query
     if Keyword.loaded?
       logger.debug "Loading index..."
       Keyword.read
@@ -31,6 +29,8 @@ main do |query|
     else
       puts "No DocSets loaded. Run `cocodex --configure` to search for existing DocSets."
     end
+  else
+    help_now! "No options or query specified"
   end
 end
 
